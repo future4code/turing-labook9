@@ -1,0 +1,12 @@
+SET SQL_SAFE_UPDATES = 0;
+DELETE FROM User WHERE id = "97436409-83cc-4007-ac0b-a26eecada372";
+DROP TABLE User;
+
+SELECT * from users_labook;
+
+CREATE TABLE users_labook (
+	id VARCHAR(255) NOT NULL PRIMARY KEY,
+    email VARCHAR(255) UNIQUE NOT NULL,
+    name VARCHAR(255) NOT NULL,
+    password VARCHAR(255) NOT NULL
+);
