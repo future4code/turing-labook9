@@ -1,3 +1,4 @@
+import { User } from '../model/User';
 import { BaseDatabase } from './BaseDatabase';
 
 export class UsersRelationDatabase extends BaseDatabase {
@@ -40,7 +41,7 @@ export class UsersRelationDatabase extends BaseDatabase {
   public async checkFollow(
     follower_id: string,
     userToUnfollowId: string,
-  ): Promise<any> {
+  ): Promise<User> {
     const result = await this.getConnection()
       .select('*')
       .from(UsersRelationDatabase.TABLE_NAME)

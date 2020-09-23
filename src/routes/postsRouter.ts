@@ -1,6 +1,10 @@
 import express from 'express';
-import { createPost } from '../endpoints/createPost';
+import PostsController from '../controller/PostsController';
 
 export const postsRouter = express.Router();
 
-postsRouter.post('/createPost', createPost);
+const postsController = new PostsController();
+
+postsRouter.post('/createPost', postsController.createPost);
+postsRouter.get('/feed', postsController.getFeed);
+postsRouter.get('/getPostByType', postsController.getPostsByType);

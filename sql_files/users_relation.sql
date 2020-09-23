@@ -1,6 +1,6 @@
 SELECT * FROM users_relation; 
 
-TRUNCATE TABLE users_relation;
+/*TRUNCATE TABLE users_relation;*/
 
 CREATE TABLE users_relation (
 	follower_id VARCHAR(255),
