@@ -1,41 +1,59 @@
 export class Post {
   constructor(
     private id: string,
-    private title: string,
+    private photo: string,
     private description: string,
-    private userId: string,
     private createdAt: Date,
+    private type: string,
+    private userId: string,
   ) {}
 
   getId() {
     return this.id;
   }
-  getTitle() {
-    return this.title;
+  getPhoto() {
+    return this.photo;
   }
   getDescription() {
     return this.description;
   }
-  getUserId() {
-    return this.userId;
-  }
   getCreatedAt() {
     return this.createdAt;
+  }
+  getType() {
+    return this.type;
+  }
+  getUserId() {
+    return this.userId;
   }
 
   setId(id: string) {
     this.id = id;
   }
-  setTitle(title: string) {
-    this.title = title;
+  setPhoto(photo: string) {
+    this.photo = photo;
   }
   setDescription(description: string) {
     this.description = description;
   }
+  setCreatedAt(createdAt: Date) {
+    this.createdAt = createdAt;
+  }
+  setType(type: string) {
+    this.type = type;
+  }
   setUserId(userId: string) {
     this.userId = userId;
   }
-  setCreatedAt(createdAt: Date) {
-    this.createdAt = createdAt;
+
+  static toPostModel(post: any): Post {
+    return new Post(
+      post.id,
+      post.photo,
+      post.description,
+      post.type,
+      post.createdAt,
+      post.user_id,
+    );
   }
 }

@@ -2,7 +2,7 @@ import { IdGenerator } from '../services/IdGenerator';
 import { HashManager } from '../services/HashManager';
 import { UserDatabase } from '../data/UserDatabase';
 import { Authenticator } from '../services/Authenticator';
-import { User, SignupInputDTO, UserOutputDTO } from '../model/User';
+import { SignupInputDTO } from '../model/User';
 
 export class UserBusiness {
   public async signUp(input: SignupInputDTO): Promise<string> {
@@ -24,17 +24,17 @@ export class UserBusiness {
     const userDataBase = new UserDatabase();
     await userDataBase.registerUser(id, input.name, input.email, hashPassword);
 
-    const authenticator = new Authenticator(); //dependencia
+    const authenticator = new Authenticator();
     const token = authenticator.generateToken({ id });
 
     return token;
   }
 
   public async login(email: string, password: string): Promise<string> {
-    const userDataBase = new UserDatabase(); //dependencia
+    const userDataBase = new UserDatabase();
     const user = await userDataBase.getUserByEmail(email);
 
-    const hashManager = new HashManager(); //dependencia
+    const hashManager = new HashManager();
     const isPasswordCorrect = await hashManager.compare(
       password,
       user.getPassword(),
@@ -44,21 +44,11 @@ export class UserBusiness {
       throw new Error('Usuário ou senha errados');
     }
 
-    const authenticator = new Authenticator(); //dependencia
+    const authenticator = new Authenticator();
     const token = authenticator.generateToken({
       id: user.getId(),
     });
 
     return token;
-  }
-
-  public async getUserProfile(token: string): Promise<UserOutputDTO> {
-    const authenticator = new Authenticator(); //dependencia
-    const authenticationData = authenticator.verify(token);
-
-    const userDataBase = new UserDatabase(); //dependencia
-    const user = await userDataBase.getUserById(authenticationData.id);
-
-    return user;
   }
 }

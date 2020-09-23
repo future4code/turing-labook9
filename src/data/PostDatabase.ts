@@ -24,20 +24,11 @@ export class PostDatabase extends BaseDatabase {
       .into(PostDatabase.TABLE_NAME);
   }
 
-  public async getRecipeById(recipeId: string): Promise<Post> {
+  public async getPostsByType(postType: string): Promise<any> {
     const result = await this.getConnection()
       .select('*')
       .from(PostDatabase.TABLE_NAME)
-      .where({ recipe_id: recipeId });
-
-    const myRecipe = new Post(
-      result[0].recipe_id,
-      result[0].title,
-      result[0].description,
-      result[0].user_id,
-      result[0].createdAt,
-    );
-
-    return myRecipe;
+      .where({ post_type: postType });
+    return Post.toPostModel(result[0]);
   }
 }
