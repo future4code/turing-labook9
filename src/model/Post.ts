@@ -57,3 +57,8 @@ export class Post {
     );
   }
 }
+export interface SearchPostDTO {
+  orderBy: string;
+  orderType: string;
+  page: number;
+}
