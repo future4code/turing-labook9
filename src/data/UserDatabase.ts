@@ -1,5 +1,5 @@
 import { BaseDatabase } from './BaseDatabase';
-import { User, UserOutputDTO } from '../model/User';
+import { User } from '../model/User';
 
 export class UserDatabase extends BaseDatabase {
   private static TABLE_NAME: string = 'users_labook';

@@ -3,6 +3,7 @@ import dotenv from 'dotenv';
 import { AddressInfo } from 'net';
 import { userRouter } from './routes/userRouter';
 import { postsRouter } from './routes/postsRouter';
+import { likesRouter } from './routes/likesRouter';
 
 dotenv.config();
 
@@ -11,8 +12,7 @@ app.use(express.json());
 
 app.use('/user', userRouter);
 app.use('/posts', postsRouter);
-//primeiro parametro: caminho da rota para entidade
-//segundo parametro: a variavel do router
+app.use('/likes', likesRouter);
 
 const server = app.listen(process.env.PORT || 3003, () => {
   if (server) {

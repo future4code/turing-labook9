@@ -5,6 +5,8 @@ import { IdGenerator } from '../services/IdGenerator';
 import { PostDatabase } from '../data/PostDatabase';
 import { FeedDatabase } from '../data/FeedDatabase';
 import dayjs from 'dayjs';
+import { SearchPostDTO } from '../model/Post';
+import { PostBusiness } from '../business/PostBusiness';
 
 export default class PostsController {
   public createPost = async (req: Request, res: Response) => {
@@ -90,5 +92,21 @@ export default class PostsController {
       });
     }
     await BaseDatabase.destroyConnection();
+  };
+
+  public searchPost = async (req: Request, res: Response) => {
+    try {
+      const searchData: SearchPostDTO = {
+        orderBy: (req.query.orderBy as string) || 'post_createdAt',
+        orderType: (req.query.orderType as string) || 'ASC',
+        page: Number(req.query.page) || 1,
+      };
+
+      const result = await new PostBusiness().searchPost(searchData);
+
+      res.status(200).send(result);
+    } catch (error) {
+      res.status(400).send(error.message);
+    }
   };
 }
