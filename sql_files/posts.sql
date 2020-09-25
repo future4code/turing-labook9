@@ -1,9 +1,8 @@
 SET SQL_SAFE_UPDATES = 0;
-/*DELETE FROM posts WHERE id = "45d9314b-fa9d-45d2-b50b-780511715440";
+/*DELETE FROM posts WHERE post_id = "1704022b-412f-4d53-9c40-d4334373742e";
 TRUNCATE TABLE posts;
-DROP TABLE posts;*/
-
-DESCRIBE posts;
+DROP TABLE posts;
+DESCRIBE posts;*/
 
 SELECT * from posts;
 

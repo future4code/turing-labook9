@@ -1,11 +1,5 @@
 import { Request, Response } from 'express';
-import { BaseDatabase } from '../data/BaseDatabase';
-import { Authenticator } from '../services/Authenticator';
-import { IdGenerator } from '../services/IdGenerator';
-import { PostDatabase } from '../data/PostDatabase';
-import { FeedDatabase } from '../data/FeedDatabase';
-import { SearchPostDTO } from '../model/Post';
-import { PostBusiness } from '../business/PostBusiness';
+import * as PostControllerModule from '../modules/PostControllerModule';
 
 import dayjs from 'dayjs';
 
@@ -13,11 +7,11 @@ export default class PostsController {
   public createPost = async (req: Request, res: Response) => {
     try {
       const token = req.headers.authorization as string;
-      const authenticator = new Authenticator();
+      const authenticator = new PostControllerModule.Authenticator();
       const authenticationData = authenticator.verify(token);
       const userId = authenticationData.id;
 
-      const idGenerator = new IdGenerator();
+      const idGenerator = new PostControllerModule.IdGenerator();
       const PostId = idGenerator.generateId();
 
       const createdAt = dayjs(req.body.date).format('YYYY-MM-DD');
@@ -28,7 +22,7 @@ export default class PostsController {
         type: req.body.type,
       };
 
-      const postDatabase = new PostDatabase();
+      const postDatabase = new PostControllerModule.PostDatabase();
       await postDatabase.createPost(
         PostId,
         postData.photo,
@@ -45,17 +39,17 @@ export default class PostsController {
         message: e.message,
       });
     }
-    await BaseDatabase.destroyConnection();
+    await PostControllerModule.BaseDatabase.destroyConnection();
   };
 
   public getFeed = async (req: Request, res: Response) => {
     try {
       const token = req.headers.authorization as string;
-      const authenticator = new Authenticator();
+      const authenticator = new PostControllerModule.Authenticator();
       const authenticationData = authenticator.verify(token);
       const userId = authenticationData.id;
 
-      const feedDatabase = new FeedDatabase();
+      const feedDatabase = new PostControllerModule.FeedDatabase();
       const feed = await feedDatabase.getFeed(userId);
       const mappedFeed = feed.map((item: any) => ({
         id: item.post_id,
@@ -71,12 +65,12 @@ export default class PostsController {
         message: e.message,
       });
     }
-    await BaseDatabase.destroyConnection();
+    await PostControllerModule.BaseDatabase.destroyConnection();
   };
 
   public getPostsByType = async (req: Request, res: Response) => {
     try {
-      const feedDatabase = new FeedDatabase();
+      const feedDatabase = new PostControllerModule.FeedDatabase();
       const feed = await feedDatabase.getPostsByType(req.body.type);
       const mappedFeed = feed.map((item: any) => ({
         id: item.post_id,
@@ -92,18 +86,20 @@ export default class PostsController {
         message: e.message,
       });
     }
-    await BaseDatabase.destroyConnection();
+    await PostControllerModule.BaseDatabase.destroyConnection();
   };
 
   public searchPost = async (req: Request, res: Response) => {
     try {
-      const searchData: SearchPostDTO = {
+      const searchData: PostControllerModule.SearchPostDTO = {
         orderBy: (req.query.orderBy as string) || 'post_createdAt',
         orderType: (req.query.orderType as string) || 'ASC',
         page: Number(req.query.page) || 1,
       };
 
-      const result = await new PostBusiness().searchPost(searchData);
+      const result = await new PostControllerModule.PostBusiness().searchPost(
+        searchData,
+      );
 
       res.status(200).send(result);
     } catch (error) {
@@ -116,7 +112,7 @@ export default class PostsController {
       const token = req.headers.authorization as string;
       const postToLike = req.body.postToLike;
 
-      const postBusiness = new PostBusiness();
+      const postBusiness = new PostControllerModule.PostBusiness();
       await postBusiness.like(token, postToLike);
 
       res.status(200).send({
@@ -132,7 +128,7 @@ export default class PostsController {
         message: e.message || e.sqlMessage,
       });
     }
-    await BaseDatabase.destroyConnection();
+    await PostControllerModule.BaseDatabase.destroyConnection();
   };
 
   public dislike = async (req: Request, res: Response) => {
@@ -140,7 +136,7 @@ export default class PostsController {
       const token = req.headers.authorization as string;
       const postToDislike = req.body.postToDislike;
 
-      const postBusiness = new PostBusiness();
+      const postBusiness = new PostControllerModule.PostBusiness();
       await postBusiness.dislike(token, postToDislike);
 
       res.status(200).send({
@@ -151,6 +147,6 @@ export default class PostsController {
         message: e.message,
       });
     }
-    await BaseDatabase.destroyConnection();
+    await PostControllerModule.BaseDatabase.destroyConnection();
   };
 }
