@@ -10,3 +10,6 @@ postsRouter.post('/createPost', postsController.createPost);
 postsRouter.get('/feed', postsController.getFeed);
 postsRouter.get('/getPostByType', postsController.getPostsByType);
 postsRouter.get('/search', postsController.searchPost);
+
+postsRouter.post('/like', postsController.like);
+postsRouter.post('/dislike', postsController.dislike);
