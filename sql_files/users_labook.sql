@@ -1,6 +1,6 @@
 SET SQL_SAFE_UPDATES = 0;
-DELETE FROM User WHERE id = "97436409-83cc-4007-ac0b-a26eecada372";
-DROP TABLE User;
+/*DELETE FROM User WHERE id = "97436409-83cc-4007-ac0b-a26eecada372";
+DROP TABLE User;*/
 
 SELECT * from users_labook;
 
