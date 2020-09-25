@@ -1,10 +1,5 @@
 import { Request, Response } from 'express';
-import { BaseDatabase } from '../data/BaseDatabase';
-import { Authenticator } from '../services/Authenticator';
-import { UserBusiness } from '../business/UserBusiness';
-import { SignupInputDTO } from '../model/User';
-import { UsersRelationDatabase } from '../data/UsersRelationDatabase';
-import { UserDatabase } from '../data/UserDatabase';
+import * as UserControllerModule from '../modules/UserControllerModule';
 
 export default class UserController {
   public login = async (req: Request, res: Response) => {
@@ -12,7 +7,7 @@ export default class UserController {
       const email = req.body.email;
       const password = req.body.password;
 
-      const userBusiness = new UserBusiness();
+      const userBusiness = new UserControllerModule.UserBusiness();
       const token = await userBusiness.login(email, password);
 
       res.status(200).send({
@@ -24,19 +19,19 @@ export default class UserController {
         message: e.message,
       });
     } finally {
-      await BaseDatabase.destroyConnection();
+      await UserControllerModule.BaseDatabase.destroyConnection();
     }
   };
 
   public signUp = async (req: Request, res: Response) => {
     try {
-      const input: SignupInputDTO = {
+      const input: UserControllerModule.SignupInputDTO = {
         name: req.body.name,
         email: req.body.email,
         password: req.body.password,
       };
 
-      const userBusiness = new UserBusiness();
+      const userBusiness = new UserControllerModule.UserBusiness();
       const token = await userBusiness.signUp(input);
 
       res.status(200).send({
@@ -48,7 +43,7 @@ export default class UserController {
         message: e.message,
       });
     }
-    await BaseDatabase.destroyConnection();
+    await UserControllerModule.BaseDatabase.destroyConnection();
   };
 
   public followUser = async (req: Request, res: Response) => {
@@ -56,7 +51,7 @@ export default class UserController {
       const token = req.headers.authorization as string;
       const userToFollowId = req.body.userToFollowId;
 
-      const authenticator = new Authenticator();
+      const authenticator = new UserControllerModule.Authenticator();
       const authenticationData = authenticator.verify(token);
       const userId = authenticationData.id;
 
@@ -64,14 +59,14 @@ export default class UserController {
         throw new Error('Insira um id válido');
       }
 
-      const userDataBase = new UserDatabase();
+      const userDataBase = new UserControllerModule.UserDatabase();
       const user = await userDataBase.getUserById(userToFollowId);
 
       if (!user) {
         throw new Error('Usuário não existe');
       }
 
-      const usersRelationDatabase = new UsersRelationDatabase();
+      const usersRelationDatabase = new UserControllerModule.UsersRelationDatabase();
       await usersRelationDatabase.followUser(userId, userToFollowId);
 
       res.status(200).send({
@@ -82,7 +77,7 @@ export default class UserController {
         message: e.message,
       });
     }
-    await BaseDatabase.destroyConnection();
+    await UserControllerModule.BaseDatabase.destroyConnection();
   };
 
   public unFollowUser = async (req: Request, res: Response) => {
@@ -90,7 +85,7 @@ export default class UserController {
       const token = req.headers.authorization as string;
       const userToUnFollowId = req.body.userToUnFollowId;
 
-      const authenticator = new Authenticator();
+      const authenticator = new UserControllerModule.Authenticator();
       const authenticationData = authenticator.verify(token);
       const userId = authenticationData.id;
 
@@ -98,7 +93,7 @@ export default class UserController {
         throw new Error('Insira um id válido');
       }
 
-      const checkFollow = await new UsersRelationDatabase().checkFollow(
+      const checkFollow = await new UserControllerModule.UsersRelationDatabase().checkFollow(
         userId,
         userToUnFollowId,
       );
@@ -106,7 +101,7 @@ export default class UserController {
         throw new Error('Você não está seguindo esta pessoa.');
       }
 
-      const usersRelationDatabase = new UsersRelationDatabase();
+      const usersRelationDatabase = new UserControllerModule.UsersRelationDatabase();
       await usersRelationDatabase.unFollowUser(userId, userToUnFollowId);
 
       res.status(200).send({
@@ -117,6 +112,6 @@ export default class UserController {
         message: e.message,
       });
     }
-    await BaseDatabase.destroyConnection();
+    await UserControllerModule.BaseDatabase.destroyConnection();
   };
 }
